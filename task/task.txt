@@ -1,0 +1,27 @@
+# Ref
+ taskwarror.org/docs/	
+
+# ADD
+	task add Buy milk
+# PRIORITY
+	task priority:H add Buy milk (H,M,L)
+# DUE - deadline
+	task due:2016-11-08 add Buy milk (yyyy-mm-dd)
+# SCHEDULED - startline
+	task scheduled:2016-11-08 add Buy milk (yyyy-mm-dd)
+#UNTIL - deletes task on date
+	task until:2016-11-08 add Buy milk (yyy-mm-dd)
+
+# VIEW
+	task list
+	task list +home
+	task list priority:H
+	task list due:today | task list +TODAY 
+	task ready (ready to work on past scheduled date)
+# REMOVE
+	task 1 done
+# CONTEXT
+
+# URGENCY
+
+#AUTORUN - STARTUP
