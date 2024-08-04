@@ -1,0 +1,23 @@
+cd = change directory
+clear = to clear terminal
+code = to open VSC
+echo = print to terminal
+ls = list structure (current directory)
+man = builtin-functions manuals
+mkdir = make new directory
+node = to run .js file,
+pwd = print working directory
+touch = make new file 
+npm = node package manager 
+	(install jest -d)-add testing
+	(npm init -y)-initate package.json
+
+ls -a = list structure (current directory) inc hidden files
+ls > list.txt = list structure to file (replaces file content)
+ls >> list.txt = list structure to file (writes new line)
+
+. = reference (to current folder)
+.. = reference (to parent folder)
+-a = reference All
+
+
