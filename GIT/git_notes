@@ -1,5 +1,3 @@
-git token = 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
-
 `git init` a creates a new git repository
 
 `ls -a` we can print all the files and directories including those directories that start with a `.`
