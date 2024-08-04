@@ -1,0 +1,15 @@
+Subtraction (-)
+The subtraction operator (-) subtracts the two operands, producing their difference.
+
+Try it
+
+Syntax
+x - y
+Copy to Clipboard
+Examples
+Subtraction with numbers
+5 - 3     // 2
+3 - 5     // -2
+Copy to Clipboard
+Subtraction with non-numbers
+'foo' - 3 // NaN

@@ -1,0 +1,79 @@
+url
+path
+method
+headers
+protocol
+
+//init fs
+const fs = require('fs/promises')
+
+//init server
+const http = require('http')
+const server = http.createServer((request, responce) => {
+	if (request.url === '/') {
+		console.log(Object.keys(request))
+		console.log(request.statusCode)
+		console.log(request.method)
+		console.log(request.url)
+		response.setHeader('Content-Type', 'application/json')
+		response.statusCode = 200
+		const body = JSON.stringify({msg: 'Hello World!'})
+		response.write(body)
+		response.end()
+	}
+	if (request.url === '/facts') {
+		console.log('getting the facts now')
+		response.setHeader('Content-Type', 'application/json')
+		response.statusCode = 200
+		fs.readFile('./top-secret/facts.json', 'utf-8')
+			.then((factsResponce) => {
+				console.log(responce)
+				const parsedFacts = {facts: JSON.parse(factsResponce)}
+				responce.write(JSON.stringify(parsedFacts))
+			})
+			.catch(() => {
+				console.log("some error happened")
+			})
+	}
+	if (request.method === 'POST') {
+		let body = ''
+		request.on('data', (packet) => {
+		body += packet.toString();
+		});
+		request.on('end' () => {
+			console.log(body);
+			const newFact = JSON.parse(body);
+			console.log(newFact)
+			fs.readFile('top-secret/facts.json', 'utf-8').then((fileContents)=> {
+				console.log(fileContents)
+				const oldFacts = JSON.parse(fileContents)
+				const newFacts =  [...oldFacts, newFact]
+				console.log(newFacts)
+				return fs.writeFile('top-secret/facts.json', JSON.stringify(newFacts, null, 2))
+			}).then(()=>{
+				//respond to client
+				response.setHeader('Content-Type', 'application/json')
+				response.statusCode = 200
+				const body = {fact: newfact}
+				res.write(body)
+				res.end()
+			
+			})
+		})
+		responce.end()
+	}
+	
+	})
+
+//start server (port,callback) //opens port
+server.listen(9090,(err) =>{
+	if (err){console.log(err)}
+	else {console.log('listerning on port 9090!')};
+})
+
+//make loacal request -- insomina //localhost:9090/
+
+//bad request,
+//internal error, 
+//not found,
+

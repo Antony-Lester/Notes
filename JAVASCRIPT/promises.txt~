@@ -1,0 +1,63 @@
+//js promises
+
+//init a promise
+let p = () => {
+return new Promise((resolve, reject) => {
+	//the promise
+	let a = 1 + 1
+	//the promise result
+	if (a === 2) {
+		//compleated
+		resolve("Promise completed")
+	} else {
+		//failed
+		reject("Promise failed")
+		}
+	})
+}
+
+//invoke promise
+p().then((message) => {
+	console.log('this is in the then ' + message)
+}).catch((message) => {
+	console.log('this is a promise failed ' + message)
+})
+//note: if needs to run mutiple times call mutiple thens...
+with return p() inside upper thens
+
+//invoke the promise
+p()
+//to invoke mutiple promises
+Promise.all([p, p1, p2, p3]).then(()={}).catch(()={})
+
+
+const results = Promise.all([]).then((response)=>{})
+
+//=========================================================
+
+node promises
+
+const fs = require('fs/promises')
+function listJSFiles(){
+	return fs.readdir('./test-data/mixed-dir')
+		.then((fileNames) => {
+			const jsFiles = fileNames.filter((file) => file.endsWith('.js'))
+			return jsFiles
+		}.catch{}
+}
+
+listJSFiles().then((result) => {
+	console.log(result)
+}).catch(()=>{console.log('there is a error')})
+
+
+
+//TODO add Inquirer to staudys page
+
+
+
+
+
+
+
+

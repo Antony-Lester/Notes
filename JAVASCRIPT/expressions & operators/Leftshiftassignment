@@ -1,0 +1,15 @@
+Left shift assignment (<<=)
+The left shift assignment operator (<<=) moves the specified amount of bits to the left and assigns the result to the variable.
+
+Try it
+
+Syntax
+x <<= y // x = x << y
+Copy to Clipboard
+Examples
+Using left shift assignment
+let a = 5;
+// 00000000000000000000000000000101
+
+a <<= 2; // 20
+// 00000000000000000000000000010100

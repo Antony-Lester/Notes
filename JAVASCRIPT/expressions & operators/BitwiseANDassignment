@@ -1,0 +1,16 @@
+Bitwise AND assignment (&=)
+The bitwise AND assignment operator (&=) uses the binary representation of both operands, does a bitwise AND operation on them and assigns the result to the variable.
+
+Try it
+
+Syntax
+x &= y // x = x & y
+Copy to Clipboard
+Examples
+Using bitwise AND assignment
+let a = 5;
+// 5:     00000000000000000000000000000101
+// 2:     00000000000000000000000000000010
+a &= 2; // 0
+Copy to Clipboard
+

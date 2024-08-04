@@ -1,0 +1,16 @@
+Remainder assignment (%=)
+The remainder assignment operator (%=) divides a variable by the value of the right operand and assigns the remainder to the variable.
+
+Try it
+
+Syntax
+x %= y // x = x % y
+Copy to Clipboard
+Examples
+Using remainder assignment
+// Assuming the following variable
+//  bar = 5
+
+bar %= 2     // 1
+bar %= 'foo' // NaN
+bar %= 0     // NaN

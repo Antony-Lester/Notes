@@ -1,0 +1,37 @@
+Remainder (%)
+The remainder operator (%) returns the remainder left over when one operand is divided by a second operand. It always takes the sign of the dividend.
+
+Try it
+
+Syntax
+x % y
+Copy to Clipboard
+Description
+For the operation n % d, n is called the dividend and d is called the divisor. The operation returns NaN if one of the operands is NaN, n is ±Infinity, or if d is ±0. Otherwise, if d is ±Infinity or if n is ±0, the dividend n is returned.
+
+When both operands are non-zero and finite, the remainder r is calculated as r := n - d * q where q is the integer such that r has the same sign as the dividend n while being as close to 0 as possible.
+
+Note that while in most languages, '%' is a remainder operator, in some (e.g. Python, Perl) it is a modulo operator. Modulo is defined as k := n - d * q where q is the integer such that k has the same sign as the divisor d while being as close to 0 as possible. For two values of the same sign, the two are equivalent, but when the operands are of different signs, the modulo result always has the same sign as the divisor, while the remainder has the same sign as the dividend, which can make them differ by one unit of d. To obtain a modulo in JavaScript, in place of n % d, use ((n % d) + d) % d. In JavaScript, the modulo operation (which doesn't have a dedicated operator) is used to normalize the second operand of bitwise shift operators (<<, >>, etc.), making the offset always a positive value.
+
+Examples
+Remainder with positive dividend
+ 13 % 5  //  3
+ 1 % -2 //  1
+ 1 % 2  //  1
+ 2 % 3  //  2
+5.5 % 2 // 1.5
+Copy to Clipboard
+Remainder with negative dividend
+-13 % 5 // -3
+-1 % 2  // -1
+-4 % 2  // -0
+Copy to Clipboard
+Remainder with NaN
+NaN % 2 // NaN
+Copy to Clipboard
+Remainder with Infinity
+Infinity % 2 // NaN
+Infinity % 0 // NaN
+Infinity % Infinity // NaN
+2 % Infinity // 2
+0 % Infinity // 0

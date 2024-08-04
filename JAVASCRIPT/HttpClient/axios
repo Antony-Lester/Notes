@@ -1,0 +1,16 @@
+Promise based HTTP client for the browser and node.js
+
+//==install==
+
+npm install axios
+
+//==example==
+
+const axios = require('axios')
+
+axios.get(`https://pokeapi.co/api/v2/pokemon`)
+    .then((results) => {
+        console.log("Count:", results.data.count)
+        console.log("Results:", results.data.results)
+    })
+    .catch((error) => { console.log(error)})

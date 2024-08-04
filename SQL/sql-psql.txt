@@ -1,0 +1,142 @@
+//sql --- psql
+
+//covering oracle, Mysql, SQLite, Psql. 
+CRUD 
+create, = INSERT 
+read, 
+update, 
+delete.
+
+check is installed  == psql --version
+start> psql
+
+list daterbases \l
+new daterbase = CREATE DATABASE northcoders_test;
+connect to database \c *database_name*
+display all tables \dt
+
+exit \q
+
+VSCODE---------
+example.sql (disable MSSQL)
+
+DROP DATABASE IF EXISTS northcoders_test;
+
+CREATE DATABASE northcoders_test;
+
+\c northcoders_test
+
+CREATE TABLE northcoders (
+	northcoder_id SERIAL PRIMARY KEY,
+	northcoder VARCHAR(40) NOT NULL,
+	date_of_birth DATE
+);
+
+INSERT INTO northcoders 
+	(northcoder, date_of_birth)
+VALUES
+	('Ant', '1991-05-17'),
+	('Vel', null),
+	('Paul, '1990-10-24'),
+	('Rose', null);
+
+SELECT northcoder, date_of_birth FROM northcoders 
+WHERE date_of_birth BETWEEN '1990-01-01' AND '1990-12-25';
+
+DELETE FROM northcoders
+WHERE northcoder = 'Ant'
+RETURNING northcoder AS leaving_northcoder;
+
+UPDATE northcoders
+SET date_of_birth = '1990-07-02'
+WHERE northcoder = 'Val'
+RETURNING *;
+
+terminal to run: psql -f ./example.sql
+pssl -f ./example.sql > output.txt //to output to file
+
+
+many to many is
+1 to many && 1 to many
+				table		column
+sprit_animal_id INT REFERENCES sprit_anamals(sprit_animal_id) NOT NULL,
+
+
+SELECT *
+FROM northcoders
+JOIN sprit_animals ON northcoders.spirit_anaimal_id = spirit_animals.spirit_animal_id;
+
+SELECT *, COUNT(northcoder_id) AS fans
+FROM spirit_animals
+LEFT JOIN northcoders ON northcoders.spirit_animal = spirit_anamals.spirit_animal_id; //THERE IS ALSO RIGHT JOIN
+GROUPBY spirit_animals.spirit_animal_id;
+
+SELECT * FROM skills ORDER BY difficulty DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+Bitwise OR assignment (|=)
+The bitwise OR assignment operator (|=) uses the binary representation of both operands, does a bitwise OR operation on them and assigns the result to the variable.
+
+Try it
+
+Syntax
+x |= y // x = x | y
+Copy to Clipboard
+Examples
+Using bitwise OR assignment
+let a = 5;
+a |= 2; // 7
+// 5: 00000000000000000000000000000101
+// 2: 00000000000000000000000000000010
+// -----------------------------------
+// 7: 00000000000000000000000000000111
+Copy to Clipboard
+

@@ -1,0 +1,22 @@
+Division (/)
+The division operator (/) produces the quotient of its operands where the left operand is the dividend and the right operand is the divisor.
+
+Try it
+
+Syntax
+x / y
+Copy to Clipboard
+Examples
+Basic division
+1 / 2              // 0.5
+
+Math.floor(3 / 2) // 1
+
+1.0 / 2.0         // 0.5
+Copy to Clipboard
+Division by zero
+2.0 / 0     // Infinity
+
+2.0 / 0.0   // Infinity, because 0.0 === 0
+
+2.0 / -0.0  // -Infinity

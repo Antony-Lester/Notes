@@ -1,0 +1,121 @@
+===TESTING INIT===
+npm install jest -d
+//== to make package.json == npm init 
+	(or) npm init -y (yes to all)
+	//== add jest to test--
+package.json
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+
+===SET FILES UP====
+//==test folder== __test__
+
+//==test file== ./__test__/sum.test.js
+
+const sum = require('./sum');
+
+describe('sections tests in to areas', () => {
+//test("",()=>{expect().toBe()})
+test('adds 1 + 2 to equal 3', () => {
+  expect(sum(1, 2)).toBe(3); //(toBe for str,num,bool ) //(toEqual for arr,obj)
+});
+});
+
+//==code file== sum.js
+
+function sum(a, b) {
+  return a + b;
+}
+module.exports = sum; //notbraketed()
+
+=== RUN TEST ===
+terminal - npm test (or npm t)
+
+
+https://jestjs.io/docs/api
+
+
+=== Note ===
+Arrange - Setup any variables or logic you will need to test the function.
+Act - Use the function in the way you want to test
+Assert - perform some assertions to check the function behaved in the correct way.
+
+.toBe() is for premivative data types
+.toBe() can be used on array and obj to check they are not the same memory ref.
+.toEqual() is for arrays and obj's
+.toHaveLength() check length array, str?, obj?
+.toHaveBeenCalledTimes() number of times fun called
+.toHaveBeenCalledWith() fun called with inputvalue
+
+=== Testing non return value behaviours ===
+
+// create a new mock function
+const mockFn = jest.fn();
+mockFn(1)
+mockFn(2)
+expect(mockFn).toHaveBeenCalled(true)
+expect(mockFn).toHaveBeenCalledTimes(2)
+
+
+
+=== checking console log ===
+const consoleSpy = jest.spyOn(console, 'log');
+
+
+expect(consoleSpy).toHaveBeenCalledTimes(1);
+expect(consoleSpy).toHaveBeenCalledWith('hello');
+
+consoleSpy.mockRestore(); //????
+
+=== clean testing env ===
+== before
+
+const globalDatabase = makeGlobalDatabase();
+
+beforeEach(() => {
+  // Clears the database and adds some testing data.
+  // Jest will wait for this promise to resolve before running tests.
+  return globalDatabase.clear().then(() => {
+    return globalDatabase.insert({testData: 'foo'});
+  });
+});
+
+test('can find things', () => {
+  return globalDatabase.find('thing', {}, results => {
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+
+test('can insert a thing', () => {
+  return globalDatabase.insert('thing', makeThing(), response => {
+    expect(response.success).toBeTruthy();
+  });
+});
+
+== after 
+
+const globalDatabase = makeGlobalDatabase();
+
+function cleanUpDatabase(db) {
+  db.cleanUp();
+}
+
+afterEach(() => {
+  cleanUpDatabase(globalDatabase);
+});
+
+test('can find things', () => {
+  return globalDatabase.find('thing', {}, results => {
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+
+test('can insert a thing', () => {
+  return globalDatabase.insert('thing', makeThing(), response => {
+    expect(response.success).toBeTruthy();
+  });
+});
+

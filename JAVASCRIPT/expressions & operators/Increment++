@@ -1,0 +1,28 @@
+Increment (++)
+The increment operator (++) increments (adds one to) its operand and returns a value.
+
+Try it
+
+Syntax
+x++
+++x
+Copy to Clipboard
+Description
+If used postfix, with operator after operand (for example, x++), the increment operator increments and returns the value before incrementing.
+
+If used prefix, with operator before operand (for example, ++x), the increment operator increments and returns the value after incrementing.
+
+Examples
+Postfix increment
+let x = 3;
+y = x++;
+
+// y = 3
+// x = 4
+Copy to Clipboard
+Prefix increment
+let a = 2;
+b = ++a;
+
+// a = 3
+// b = 3

@@ -1,0 +1,249 @@
+path handle -express
+deal with request
+
+data storage
+
+deal with responce
+send data back
+
+mvc = models view controler
+model -> data
+view -> html
+controller -> required responce
+
+(listen.js is a side file) just to impliment a server listern
+
+flow in is = app.js -> controller.js -> model.js -> controller.js -> app.js 
+ 
+flow return is = model.js -> controller.js -> app.js
+
+
+//============= app.js
+const { handleGreeting , getMentorById} =  require('./controllers'); 
+
+app.get("/api", handleGreeting);
+
+app.get("/api/mentors/:mentorId", getMentorById);
+
+app.post("/api/mentors", postMentor);
+
+module.exports = app;
+
+//======================== controllers.js
+const {fetchMentorByID} = require('.models')
+
+const handleGreeting = (request, responce){
+	responce.status(200).send({message: 'hello!'})
+}
+
+const getMentorById = (request, responce){
+	const {mentorId} = request.params;
+	fetchMentorByID(mentorId).then((mentorObj) =>{
+	console.log("handles the data from model")
+		responce.status(200).send({mentor})
+	}).catch((err)=>{
+		responce.status(500).send({msg: "we got a error"})
+		console.log(err, "Error in controller")
+	})
+}
+
+//======================= models.js
+const fs = require('fs/promises')
+
+const fetchMentorById = (mentorId) => {
+	return fs.readFile(`./data/${mentorId}.json`, 'utf-8).then((mentorString)=>{
+		return JSON.parse(mentorString)
+	})
+}
+
+module.exports = {fetchMentorById}
+
+//======================== listen.js
+const app = require('./app')
+
+app.listen(9090, () => {
+  console.log(`Server is listening on port 9090...`);
+});
+
+
+=============Error Handling============
+===Causes
+1)dev errors
+2)user errors
+3)systems error
+404, not found
+400, bad request
+===============ERROR=Middlewear==============
+has to have 4 (err, req, res, next)
+===INVOKE ERROR==
+app.use((err, req,res, next) => {
+	next("error")
+})
+
+or
+=IN MODELS=
+return Promise.reject('some error')
+return Promise.reject({ status:500, msg:'some error'})
+===NO ERROR==?
+app.use((req,res, next) => {
+	next()
+})
+===HANDLE ERROR== (in express only)
+app.use((err, req, res, next) => {
+	console.log(err)
+	res.status(500).send("opps")})
+
+==========================================================
+==========================================================
+Write Tests--
+// -> valid Id 
+	-> 200 status code and drink
+// -> valid Id but dosn't exist 
+	-> 404 status code
+// -> invalid Id (ie String?) /api/drinks/notanId 
+	-> 400 status code
+--test
+test('400 bad request if id is invalid', () => {
+	return request(app)
+	.get('/api/drinks/notAnId')
+	.expect(400)
+	.then((responce) => {
+		expect(responce.body.msg)
+		.tobe('bad request')})
+})
+
+//.get('/api/drinks/1000)
+//.expect(404)
+//.then((responce) => {
+		expect(responce.body.msg)
+		.tobe('404 not found')})
+
+--app.js
+//first middleware - custom error
+app.use((err, req, res, next) => {
+	console.log(err, "<<<< in the first error handling middleware")
+	if(err.status && err.msg){
+		res.status(err.status).send({err.msg})
+	}
+}
+//second middleware - psql error
+app.use((err, req, res, next) => {
+	console.log(err, "<<<< in the second error handling middleware")
+	if (err.code === '22P02')
+		{res.status(400).send({msg: 'SQL says no'}
+	else {next(err)}
+})
+//third middleware - 500 error
+app.use((err, req, res, next) => {
+	console.log(err) // default debugger
+	res.status(500).send({msg: 'internal server error'})
+	
+})
+--controller.js
+
+.catch((err) => {
+	console.log('in the catch', err)
+	next(err)
+})
+--model.js
+function () {
+	return db.query()
+	.then(({rows})) => {
+		if (rows.length === 0) {
+			return Promise.reject({status: 404, msg: "not found"})
+		}
+	}
+}
+
+
+
+
+
+//first middleware - custom error
+app.use((err, req, res, next) => {
+	//console.log(err, "custom debugger")
+})
+//second middleware - psql error
+app.use((err, req, res, next) => {
+	//console.log(err, "psql debugger")
+})
+//third middleware - 500 error
+app.use((err, req, res, next) => {
+	console.log(err, "default debugger") 
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

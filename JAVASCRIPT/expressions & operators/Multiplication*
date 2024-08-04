@@ -1,0 +1,19 @@
+Multiplication (*)
+The multiplication operator (*) produces the product of the operands.
+
+Try it
+
+Syntax
+x * y
+Copy to Clipboard
+Examples
+Multiplication using numbers
+ 2 * 2      // 4
+-2 * 2     // -4
+Copy to Clipboard
+Multiplication with Infinity
+Infinity * 0         // NaN
+Infinity * Infinity  // Infinity
+Copy to Clipboard
+Multiplication with non-numbers
+'foo' * 2 // NaN

@@ -1,0 +1,269 @@
+# Recursion
+
+## Prior Knowledge
+
+- Understand how functions are called.
+- Understand that function invocations are added to the call stack and the nature of the call stack (**LIFO**).
+
+## Learning Objectives
+
+- the key features of recursive functions (base case, recursive case, recursive step)
+- considerations and approaches when writing recursive solutions
+- understanding when recursive solutions are necessary
+
+## Background
+
+When we talk about **recursion**, in programming terms, we are talking about **recursive functions**. A recursive function is a function that makes a call to itself.
+
+The two following examples have the same result - they calculate the factorial on a number (the product of all integers from 1 to _n_).
+
+### Example: factorial ()
+
+```javascript
+function factorial(n) {
+  let total = 1;
+  for (n; n > 1; n--) {
+    total *= n;
+  }
+  return total;
+}
+
+function recursiveFactorial(n) {
+  if (n === 1) return n;
+  return n * recursiveFactorial(n - 1);
+}
+```
+
+Consider some of the differences between these solutions:
+
+- the recursive solution is clearly shorter and more concise.
+- the recursive solution is arguably more readable - there are fewer variables with unclear purposes.
+- the recursive solution will be more costly, due to function calls being added to the stack.
+
+As a developer, your focus should always be on the _development_ of the code - performance is a secondary consideration. If performance is an issue, this can be addressed in performance testing.
+
+### Key features of recursion
+
+#### Base case
+
+A function that can call itself also needs a reason _not_ to call itself, else invocations will keep getting added to the stack (**stack overflow**). Therefore a recursive function needs a **base case** (or **exit case**) - a condition in which the function can return, and stop calling tiself.
+
+#### Recursive case
+
+The function also needs a reason to call itself. Recursive behaviour might be useful for constructing an object, keeping a total, finding a value, or a number of other reasons. The nature of the recursive case will determine the conditions and arguments with which the function is called.
+
+#### Recursive step
+
+The recursive case needs to move the problem towards the base case, else the function will error out in the same way as if there was no base case. As such, the problem needs to be broken down, minimized, modified with each subsequent call to the function. Each recursive call should be edging you nearer to your base case.
+
+### Example: sum()
+
+```javascript
+function sum(n) {
+  if (n <= 1) return n;
+  return n + sum(n - 1);
+}
+```
+
+This is a successful recursive solution because:
+
+- the first line describes a conditional base case, in which the function returns.
+- the second line shows how our total is constructed - by adding the recursive call to the number that has been passed in as an argument.
+- by reducing the value of the the recursive call's argument (`n - 1`), each subsequent invocation takes it closer to the base case.
+
+When writing - and more importantly, _testing_ - a recursive function, it's often sensible to consider the base case first. You can ensure that your function works correctly by thinking about the situation in which it _won't_ need to call itself first.
+
+### The call stack
+
+When you ask your computer to invoke a function, it 'pushes' this function to something the **call stack**. The call stack operates on a _last in, first out_ principle (_LIFO_). The common analogy is a stack of plates: the last plate to be added must be the first to be washed. As soon as a new function is pushed to the call stack, it must return and 'pop' off the call stack before the next function down can continue.
+
+In recursion, you may have several invocations stacking up, waiting for one to resolve when the base case is finally met, allowing all the previous invocations to finally evaluate and resolve too.
+
+### Examples: countLength(), reverse()
+
+Though recursion is relatively simple to understand with numbers, we can use it as an approach with any data type. If we are to imagine a JS world where the length property of a string doesn't exist, we could use recursion to count its length:
+
+A function that counts the length of a string recursively:
+
+```javascript
+function countLength(str) {
+  if (str === '') return 0;
+  return 1 + countLength(str.slice(1));
+}
+```
+
+A function that reverses a string recursively:
+
+```javascript
+function reverse(str) {
+  if (str.length < 2) return str;
+  return str.slice(-1) + reverse(str.slice(0, -1));
+}
+```
+
+In both of these examples, we are using `.slice` to make our recursive step towards our base case - a short enough string to not need counting / reversing any longer. We build up our ultimate solution by adding or appending the result of our recursive calls to the desired value we got out of that call - in `countLength()`, it is `1`; in `reverse()` it is `str.slice(-1)`.
+
+### Recursion as the only solution
+
+All the examples so far have had alternative (and often better) solutions. However, recursion is the only solution for objects/arrays which are nested data structures that we may need to inspect deeply, but not know how deeply.
+
+Consider this implementation of `countNestedArrays`, which looks through an array and counts the number of times the value appears in that array. For this, no recursion is necessary.
+
+```javascript
+function countNestedArrays(arr, value) {
+  let total = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === value) total++;
+  }
+
+  return total;
+}
+```
+
+But we are only checking the equality of each iterated value against the value passed in as an argument. If the iterated value was another array we wanted to look inside, this equality check would not suffice. However, this _would_ be a sensible, testable initial behaviour, from which we can implement TDD.
+
+Thankfully, we have already written a function that counts the instances inside the inner array - it's the same function we've just written. We just need to describe the condition in which this function should call itself:
+
+```javascript
+function countNestedArrays(arr, value) {
+  let total = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === value) total++;
+    if (Array.isArray(arr[i])) total += countNestedArrays(arr[i], value);
+  }
+  return total;
+}
+```
+
+Now, we check two things for each item in the array - we add 1 to our result if we come across the desired item, but instead of ignoring array as if they were any other undesired value, we call our function again on them, and add whatever they eventually return - even if they themselves make further recursive calls - to our total.
+
+It may not be as obvious, but this function still has all the key features of recursion - they are just hidden away in the syntax of the for loop:
+
+- `i < arr.length`, or the 'while' condition of our for loop, describes the base case. When there is no more array the iterate over, the function can return and there will be no more recursive calls.
+- `i++` denotes our recursive step, taking us closer towards the end of the array, and the base case.
+
+# Recursion 102 - Traversing Objects
+
+## Prior Knowledge
+
+- Understand key features of recursive functions.
+- Understand and identify situations where recursion is advisable / necessary
+
+## Learning Objectives
+
+- Be more confident in applying recursion to nested collections
+- Use VSCode's debugger to debug recursive problems
+
+## A Use Case For Recursion
+
+A common use case for recursion is to query, analyse or manipulate nested collections (arrays and objects), and tree-like structures. An example of this is the Document Object Model in the browser. `HTML` has a tree-like structure - all of the elements may have siblings and children nested to an unknown level.
+
+## An Example: Counting Deeply Nested Arrays
+
+The Challenge: Count the number of arrays in an arbitrarily nested array.
+
+Always consider:
+
+- a base case
+- a step towards the base case
+- what should happen on each recursive call
+
+The best way to think about solving this problem is to scaffold out what the function should do for some simple inputs.
+
+```javascript
+function countArrays(arr) {
+  let numberOfArrays = 1;
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) numberOfArrays++;
+  }
+  return numberOfArrays;
+}
+
+countArrays([1, 2, 3]); // 1
+countArrays([1, 2, 3, [5], 6, [7]]); // 3
+```
+
+Now re-use this function recursively. Instead of incrementing our counter by 1 each time we find a nested array, we need to be able to pass any arrays we encounter back to `countArrays` to be iterated through, such is with this input, where we should expect a total of 4.
+
+`[1, 2, 3, [5], 6, [7, 8, [1, 2, 3]], 9]`
+
+```javascript
+function countArrays(arr) {
+  let numberOfArrays = 1;
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) numberOfArrays += countArrays(arr[i]);
+  }
+  return numberOfArrays;
+}
+```
+
+## Passing Variables with Recursion
+
+Our examples so far have shown us building up or totalling a result as the recursive invocations return after the base case. Sometimes it is more appropriate to pass your 'accumulated' result through to your next recursive call, so the entire object can be returned through the call stack when the base case is finally reached.
+
+Contrast these solutions for `countWhiteSpace()`:
+
+```js
+function countWhiteSpace(str) {
+  if (str === '') return 0;
+  return str[0] === ' '
+    ? 1 + countWhiteSpace(str.slice(1))
+    : countWhiteSpace(str.slice(1));
+}
+```
+
+or
+
+```js
+function passedWhiteSpace(str, count = 0) {
+  if (str === '') return count;
+  if (str[0] === ' ') count++;
+  return passedWhiteSpace(str.slice(1), count);
+}
+```
+
+This approach plays on our tendency to want to keep a counter in such situations. In a recursive function, it is pointless to declare a counter within the function scope, as it will reset on each invocation.
+
+The solution is to keep track of our count by passing it as an argument from one execution context to the next.
+We use this approach to build a result on each call and when we hit the base case, the return value will be the number of spaces. For the sake of the first invocation, we pass a default parameter (`count = 0`) so their is no type error from incrementing and it's not necessary to pass in an initial value.
+
+A further approach would be to define a counter _out_ of scope. To do this in the global would be exceedingly bad practice as this would render our function impure, expose its behaviour to bugs, and make it difficult to test. Alternatively, you could keep the count in the scope of a helper function and modify it from within the recursive function.
+
+```js
+function helperWhiteSpace(str) {
+  let count = 0;
+  recursiveCount(str);
+  return count;
+
+  function recursiveCount(str) {
+    if (str === '') return;
+    if (str[0] === ' ') count++;
+    return recursiveCount(str.slice(1));
+  }
+}
+```
+
+This approach is better in that it keeps our function pure and doesn't expose the count, but it does lose the concise nature and readability of a contained recursive function.
+
+
+## Debugger
+
+VS Code has a useful debugging tool, indicated by the 'no bug entry' icon on the left hand side. It is an alternative to execution context diagrams, describing the state of the call stack and the local execution context.
+
+It can be useful for recursive problems, as it can describe the individual parameters and return values for each invocation. This can make it easier to keep track of how the final answer is constructed.
+
+To setup the debugger for use with Jest, see the [Jest Docs](https://jestjs.io/docs/troubleshooting#debugging-in-vs-code)
+
+To use it, set **breakpoints** in your code by click the red dot to the right of a line number. This indicates that you want to 'break' the code at this point, and keep track of the thread yourself. A sensible place to add a breakpoint is on the first line inside the function.
+
+Press the green play button at the top of the debug panel. This will the break code and show the current state of the execution context, as well as the call stack.
+
+Using the debugger can feel like an art rather than a science sometimes. In the navigation at the top you had the opportunity to _step into_ or _step over_ your code. _Into_ will complete the next evaluation and move on to the next statement. Use _over_ when you want to move past an execution context, as you may well wish to do for code which is not your own (for example, `console.log` is a remarkably in-depth process).
+
+Whilst in debugging mode, you may wish to pay attention to:
+
+- the call stack, which will tell you about your current invocation and any previous invocations that are yet to resolve
+- the variables in the local scope or current execution context, including computed return values
+- when you hover your mouse over a variable in your code, you can see its current value at this point in the execution context
+
