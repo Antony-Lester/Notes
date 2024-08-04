@@ -1,0 +1,391 @@
+postgresql.org
+Success. You can now start the database server using: pg_ctlcluster 12 main start
+======================= Node postgres ==========================
+
+=======Global Variables=======
+process.env.MY_VAR = 'bullettrain'
+
+can assign in terminal before running, % MY_VAR=bullettrain node index.js
+=============================================================================
+
+controller
+-Interpret the request
+-ask for data from the model
+sending response to user
+
+model
+-ask for data from the database
+-send data back to controller
+
+database
+
+=============================================================================
+install node-postgres//npm init -y, npm i pg
+
+package..seed..psql -f db/seed.sql ...how to run?
+
+--seed.sql (creates the inital db)
+
+npm run seed //to run package.json, scripts, seed
+========== supertest ============
+npm i -D jest supertest
+.expect() == status code
+.toBeInstanceOf(Array) //checks if is array
+.toHaveLength(7) //checks length
+.any()??
+================== terminal ====================
+PGDATABASE=nc_snacks node db/index.js
+================== code =======================
+const {Pool, Client} = require('pg')//pool=mutiple connections Client=single request at a time
+const pool = new Pool()
+
+function getSnacks(){
+	pool.query('SELECT * FROM snacks;')
+	.then(({rows : snacks}) => {
+	console.log(snacks)
+	pool.end()
+	})
+}
+//getSnacks()
+
+function getSnackById(id){
+	pool.query(`SELECT * FROM snacks Where snack_id=$1;`, [id])
+	.then(({rows: [snack]}) =>{//destructuring obj & arr
+	console.log(snack)
+	pool.end()
+	})
+}
+//getSnackById(3)
+
+================SQL INJECTION====================
+getSnackBYID('3; DROP TABLE SNACKS')
+// to stop this.. pool.query('', [])
+
+=== Seeding sql db with postgres ===
+===.env.development
+
+===.env.test
+
+===package.json
+scripts {"setup-dbs": "psql -f db/setup.sql",
+	"seed": "node db/run-seed.js
+	"test": "jest"
+}
+
+===setup.sql
+DROP DATABASE IF EXISTS northgamers;
+DROP DATABASE IF EXISTS northgamers_test;
+
+CREATE DATABASE northgamers;
+CREATE DATABASE northgamers_test;
+===seed.js
+const db = require('./index'); //pool function
+exports.seed = () => {
+	return db.query("DROP TABLE IF EXISTS reviews;")
+	.then(() => {
+		return db.query("DROP TABLE IF EXISTS games;")
+	})
+	.then(() => {
+		return db.query(`CREATE TABLE games (
+		game_id SERIAL PRIMARY KEY,
+		game_title VARCHAR(100),
+		release_year INT,
+		img_url VARCHAR,
+		console_name VARCHAR(50) NOT NULL
+		);`)
+	})
+	.then(() => {
+		return db.query(() => {
+	`CREATE TABLE reviews (
+		reviw_id SERIAL PRIMARY KEY,
+		username VARCHAR NOT NULL,
+		comment TEXT NOT NULL,
+		rating INT,
+		game_id INT NOT NULL REFERENCES games(game_id));`})
+	}).then(() => {
+		db.end()
+	})
+}
+==run-seed.js
+const seed = require './seed'
+seed()//call npm run seed //is invoked from the package.json
+
+# `node-postgres`
+
+## Prior knowledge
+
+- basic SQL statements and queries
+- understanding of how JavaScript promises work
+- able to access the results of promises with `.then()` and `.catch()` methods
+- creating an express server with routers
+- understanding of the MVC pattern
+
+## Learning Objectives
+
+- able to query an SQL database from a `Node.js` application
+- able to set up a connection pool
+- understand concept of SQL injection
+- able to use dynamic database query parameters without making queries vulnerable to `SQL` injection
+- able to integrate `node-postgres` database queries into an `Express` HTTP server
+
+## 1. node-postgres
+
+> "node-postgres is a collection of node.js modules for interfacing with your PostgreSQL database."
+
+[@briancarlson, node-postgres creator](https://twitter.com/briancarlson)
+
+## 2. Connection setup
+
+Run `npm install pg` to install `node-postgres`.
+
+The `node-postgres` connection can be configured within a `db` directory, alongside the SQL seeding script for the database that is to be connected to.
+
+```
+ └── node_modules/
+ └── db/
+ │  ├──── index.js <-- node-postgres connection pool
+ │  └──── seed.sql
+ ├── .gitignore
+ ├── package-lock.json
+ └── package.json
+```
+
+### Connecting with a single Client
+
+A connection to a psql database is made by creating a new instance of the node-postgres `Client` class:
+
+```js
+// db/index.js
+const { Client } = require('pg');
+
+const client = new Client();
+
+client
+  .connect()
+  .then(() => {
+    console.log(`connected to ${process.env.PGDATABASE}!`);
+  })
+  .catch((err) => {
+    console.log('connection error:', err);
+  });
+```
+
+The database connection settings can be set using [environment variables](https://node-postgres.com/features/connecting#environment-variables):
+
+```sh
+PGDATABASE=my_database_name node db/index.js
+```
+
+Accepted environment variables include `PGDATABASE`, `PGUSER`,`PGPASSWORD`, `PGHOST`, & `PGPORT`.
+
+**If no PGDATABASE environment variable is set, node-postgres will connect to the default database.**
+
+### Connection Pooling
+
+Connecting a new client to a PostgreSQL server can take 20-30 milliseconds. During this time passwords are negotiated, SSL may be established, and configuration information is shared between the client and the server. Incurring this cost every time an application wants to execute a query would substantially slow it down.
+
+When working with web applications, or other software that makes frequent queries to a database, connection pools can be used.
+
+A client pool allows the app to have a reusable pool of clients that can be checked-out, used, and returned. Generally an app will want a limited number of these (usually just 1), as creating an unbounded number of pools defeats the purpose of pooling at all.
+
+[Connection pooling](https://node-postgres.com/api/pool) with `node-postgres` follows a similar syntax to connecting with a single client, and uses the same queries api, but has some additional [config options and methods](https://node-postgres.com/api/pool).
+
+When there is only a single query that needs to be run on the database, the pool has a method to run a query on the first available idle client and return its result using [pool.query()](https://node-postgres.com/api/pool#pool-query-gt-promise-pg-result-).
+
+```js
+// db/index.js
+const { Pool } = require('pg');
+
+const db = new Pool();
+```
+
+We can prevent accidental connections to the default database by checking that a database name is provided to the environment variables. It's usually useful to export the connection pool so that database queries can be run in different files:
+
+```js
+// db/index.js
+const { Pool } = require('pg');
+
+if (!process.env.PGDATABASE) {
+  throw new Error('No PGDATABASE configured');
+}
+
+module.exports = new Pool();
+```
+
+### Queries
+
+The api for executing queries supports both callbacks and promises.
+
+Below is an example using promises:
+
+```js
+const db = new Pool();
+
+db.query('SELECT * FROM table_name;')
+  .then((result) => console.log(result))
+  .catch((err) => console.log(err));
+```
+
+The [results object](https://node-postgres.com/api/result) that is returned by `node-postgres` for a successful query has a key of `rows` which is an array of the records that have been returned by the query in the form of a json-like object for each row.
+
+## 3. Using `node-postgres` with `express` example
+
+### GET example
+
+#### Express app setup
+
+Install `express`.
+
+Setup `app.js` and `houses.js` controllers:
+
+```js
+// app.js
+const express = require('express');
+const app = express();
+const apiRouter = require('./routes/api.js');
+const { sendHouses } = require('./controllers/houses.js');
+
+app.get('/api/houses', sendHouses);
+
+module.exports = app;
+
+// controllers/houses.js
+exports.sendHouses = (req, res) => {
+  res.status(200).send('GET all houses route OK.');
+};
+```
+
+#### Accessing and sending data from the database
+
+Each controller should be responsible for invoking a model that will provide data in the format that is to be sent to the client.
+
+As such, it is the model function that will need to use the `client` that is exported from `db/index.js` to query the database.
+
+```js
+// models/houses.js
+const db = require('../db/index.js');
+
+exports.selectHouses = () => {
+  return db.query('SELECT * FROM houses;').then((result) => result.rows);
+};
+```
+
+The model function must `return` the query so that the result can be accessed in the `.then()` block when the model is invoked in the controller function.
+
+By returning `result.rows` from the query, the data is sent to the controller function as an array, ready to be sent to the client. Making the controller function extremely succinct.
+
+```js
+// controllers/houses.js
+const { selectHouses } = require('../models/houses.js');
+
+exports.sendHouses = (req, res) => {
+  selectHouses().then((houses) => res.status(200).send({ houses }));
+};
+```
+
+```
+ ├─── node_modules/
+ ├─── controllers/
+ │  └──── houses.controllers.js
+ ├─── db/
+ │  ├──── index.js <-- node-postgres connection pool
+ │  └──── seed.sql
+ ├── models/
+ │  └──── houses.models.js
+ ├── app.js
+ ├── index.js
+ ├── .gitignore
+ ├── package-lock.json
+ └── package.json
+```
+
+## 4. `node-postgres` parameterized query examples
+
+### GET by ID example
+
+For a request to `GET` a specific house from the database, the endpoint could be set up as follows:
+
+#### Route and Controller Setup
+
+```js
+// app.js
+app.get('/api/houses/:house_id').get(sendHouseById);
+
+// controllers/houses.js
+exports.sendHouseById = (req, res) => {
+  const { house_id } = req.params;
+  selectHouseById(house_id).then((house) => res.status(200).send({ house }));
+};
+```
+
+#### Model Setup
+
+For an endpoint that uses values from the request object, such as `params`, `query` or `body`, **string concatenation and string template literals should NOT be used.**
+
+This can (and often does) lead to _**sql injection**_ vulnerabilities. This means that external code, written by the client, could be run on the database server, potentially giving access to read, write and modify sensitive data (e.g. passwords, email addresses, personal data, etc.)
+
+The model function in this case would then need to use the `house_id` parameter in the SQL query,.
+
+Without having to use a template literal, or string concatenation, the query method accepts a second argument of an array of values.
+
+The indexes of the array can then be accessed in the raw sql query by using `$1`, `$2`, `$3`, etc... depending on the variables position in the array.
+
+```js
+// models/houses.js
+exports.selectHouseById = (house_id) => {
+  return db
+    .query('SELECT * FROM houses WHERE house_id = $1;', [house_id])
+    .then((result) => result.rows[0]);
+};
+```
+
+The above query returns an array containing a single object for the returned row.
+
+The resulting row should be destructured before being returned to the controller. This is because the model in the MVC framework should be responsible for both fetching and formatting the data ready for the controller to send to the client.
+
+### POST example
+
+For a request to `POST` a new house to the database, the endpoint could be set up as follows.
+
+#### Route Setup
+
+The `.post()` method can be added to the existing routes in `app.js`
+
+```js
+// app.js
+app.post('/api/houses', addHouse);
+```
+
+#### Controller Setup
+
+The controller is then responsible for passing the request body to the model, and sending the newly inserted house to the client.
+
+```js
+// controllers/houses.js
+exports.addHouse = (req, res) => {
+  insertHouse(req.body).then((house) => res.status(201).send({ house }));
+};
+```
+
+#### Model Setup
+
+Within the model, the key values for the data that is being inserted can be destructured from the body that has been sent, and passed into the array that `.query()` accepts as its second argument.
+
+`"...RETURNING *;"` must be added to the end of the `"INSERT INTO..."` SQL statement in order for the newly inserted row to be returned by the query.
+
+```js
+// model/houses.js
+exports.insertHouse = (newHouse) => {
+  const { house_name, founder, animal } = newHouse;
+  return db
+    .query(
+      'INSERT INTO houses (house_name, founder, animal) VALUES ($1, $2, $3) RETURNING *;',
+      [house_name, founder, animal]
+    )
+    .then(({ rows }) => rows[0]);
+};
+```
+
+## Related Resources
+
+- [SQL injection attack YouTube video](https://www.youtube.com/watch?v=ciNHn38EyRc)

@@ -1,0 +1,38 @@
+# Project Retrospective
+​
+Upon completion, and as part of agile methodology, most projects will have some form of retrospective in order to determine successes, failures and points of learning to take into the next project.
+​
+Your task this morning is carry out your own retro. We recommend [metro retro](https://metroretro.io/) as it is free and you get to fire as much confetti as you please 🎉
+​
+## Metro Retro
+​
+### `1. Choose the type of retro`
+​
+- There are a few different kinds of retros available
+- We like `Liked / Learned / Lacked / Longed For`
+​
+### `2. Keep your sticky notes private`
+​
+- This allows each team member to express their opinions without being influenced by others
+​
+### `3. Set a timer for the addition of sticky notes`
+​
+- By limiting the time to add points to the retro you hone in on the most important and memorable outcomes from the project, keeping the retro relevant and succinct
+- A couple of minutes should be plenty
+​
+### `4. The big reveal`
+​
+- Share all your sticky notes at once
+​
+### `5. Set another timer to react to sticky notes`
+​
+- Set a limit of how many times each team member can up vote a sticky note per section
+- This will allow important themes from the project to come through
+​
+### `6. Create some action points based on findings`
+​
+- These will determine how you can improve on the next project
+​
+and in your case
+​
+- provide you with talking points from the project for interviews with potential employers

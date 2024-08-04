@@ -1,0 +1,41 @@
+ https://github.com/SBoudrias/Inquirer.js#installation
+ 
+ to install ==:
+ 
+ npm install inquirer@^8.0.0
+ 
+ to add to file ==:
+ 
+ const inquire = require('inquirer')
+ 
+ 
+ //======= example simple question ===========
+ //=======text input
+const inquirer = require('inquirer')
+
+inquirer.prompt([
+  {name: 'userName',
+    message: 'What is your name?...',
+    type: 'input'
+   }])
+  .then(function(answer){
+    console.log(`Your name is ${answer.userName} :-)`);
+  });
+ //==========select options
+ inquirer.prompt([
+            {
+                name: 'remove',
+                message: 'Who do you want to remove?..',
+                type: 'list',
+                choices: fileContent
+            }])
+            .then((result) => {
+                var index = fileContent.indexOf(result.remove);
+                if (index !== -1) { fileContent.splice(index, 1) }
+                fs.writeFile("vip-list.txt", fileContent.join("\n"))
+                    .then(() => { console.log(`${result.remove} was removed from file`)})
+            })
+            .catch((error) => { console.log(error) });
+//===========
+ 
+ 

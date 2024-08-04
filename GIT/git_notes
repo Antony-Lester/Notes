@@ -1,0 +1,27 @@
+git token = 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
+
+`git init` a creates a new git repository
+
+`ls -a` we can print all the files and directories including those directories that start with a `.`
+
+`git status` checks local file status
+
+`git add` <file>... adds file to repo
+
+`git restore <file>...` to discard changes in working directory
+
+`git commit -a -m <commit-message-here>` when you commoit a change to a repo
+
+`git remote add origin <origin-repository-url>` add from github
+
+git remote -v` check the add from github
+
+`git push origin main` moves local changes to remote repo to main branch
+
+`git pull` updates local files from remote repo
+
+`git log` shows commits timeline
+
+`git clone <url.git>` clone a git repo 
+
+;wq (to exit vim display)
