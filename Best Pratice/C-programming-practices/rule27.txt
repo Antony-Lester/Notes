@@ -1,0 +1,36 @@
+#### Avoid unsigned types because the integer conversion rules are complicated
+
+[CERT attempts to explain the integer conversion rules](https://www.securecoding.cert.org/confluence/display/seccode/INT02-C.+Understand+integer+conversion+rules), saying:
+
+> Misunderstanding integer conversion rules can lead to errors, which in turn can lead to exploitable vulnerabilities. Severity: medium, Likelihood: probable.
+
+*Expert C Programming* (a great book that explores the ANSI standard) also explains this in its first chapter. The takeaway is that you shouldn't declare `unsigned` variables just because they shouldn't be negative. If you want a larger maximum value, use a `long` or `long long` (the next size up).
+
+If your function will fail with a negative number, it will probably also fail with a large number - which is what it will get if passed a negative number. If your function will fail with a negative number, just assert that it's positive. Remember, lots of dynamic languages make do with a single integer type that can be either sign.
+
+Unsigned values offer no type safety; even with `-Wall` and `-Wextra`, GCC doesn't bat an eyelid at `unsigned int x = -1;`.
+
+*Expert C Programming* also provides an example for why you should cast all macros that will evaluate to an unsigned value.
+
+``` c
+#define NELEM( xs ) ( ( sizeof xs ) / ( sizeof xs[0] ) )
+int const xs[] = { 1, 2, 3, 4, 5, 6 };
+
+int main( void )
+{
+    int const d = -1;
+    if ( d < NELEM( xs ) - 1 ) {
+        return xs[ d + 1 ];
+    }
+    return 0;
+}
+```
+
+The `if` branch won't be executed, because `NELEM` will evaluate to an `unsigned int` (via `sizeof`). So, `d` will be promoted to an `unsigned int`. `-1` in [two's complement](https://en.wikipedia.org/wiki/Two%27s_complement) represents the largest possible unsigned value (bit-wise), so the expression will be false, and the program will return `0`. The solution in this case would be to cast the result of `NELEM`:
+
+``` c
+#define NELEM( xs ) ( long )( ( sizeof xs ) / ( sizeof xs[ 0 ] ) )
+```
+
+You will need to use unsigned values to provide [well-defined bit operations](http://stackoverflow.com/questions/4009885/arithmetic-bit-shift-on-a-signed-integer) and modular arithmetic overflow. But, try to keep those values contained, and don't let them interact with signed values.
+

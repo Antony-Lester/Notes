@@ -1,0 +1,15 @@
+#### Don't write argument names in function prototypes if they just repeat the type
+
+But, always declare the name of any pointer argument to communicate if it's a pointer-to-array (plural name) or a pointer-to-value (singular name).
+
+``` c
+bool trie_eq( Trie trie1, Trie trie2 );         // Bad
+bool trie_eq( Trie, Trie );                     // Good
+
+// Bad - are these pointers for modification, nullity, or arrays?
+void trie_add( Trie const *, char const * );
+
+// Good
+void trie_add( Trie const * trie, char const * string );
+```
+

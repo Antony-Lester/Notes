@@ -1,0 +1,20 @@
+#### Comment non-standard-library `#include`s to say what symbols you use from them
+
+Namespaces are one of the great advances of software development. Unfortunately, C missed out (scopes aren't namespaces). But, because namespaces are so fantastic, we should try to simulate them with comments.
+
+``` c
+#include <test.c/test.h> // Test, tests_run
+#include "trie.h" // Trie, Trie_*
+```
+
+This provides a few benefits:
+
+- readers aren't forced to refer to documentation or use `grep` to find out where a symbol is defined (or, if you don't follow the rule below, where it comes from): your code just tells them
+- developers have a hope of being able to determine which `#include`s can be removed and which can't
+- developers are forced to consider namespace pollution (which is otherwise ignored in most C code), and encourages them to only provide small, well-defined headers
+
+The downside is that the `#include` comments aren't checked or enforced. I've been intending to write a checker for this for quite some time, but for now, there's nothing to stop the comments from becoming wrong - either mentioning symbols that aren't used anymore, or not mentioning symbols that are used. In your project, try to nip these problems in the bud, to stop it from spreading. You should always be able to trust your code.  This maintenance is annoying, for sure, but I think `#include` comments are worth it in aggregate.
+
+Finding where things come from is always one of my main challenges when learning a codebase. It could be a whole lot easier. I've never seen any projects that write `#include` comments like this, but I'd love to see it become a thing.
+
+

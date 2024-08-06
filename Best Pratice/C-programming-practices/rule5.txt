@@ -1,0 +1,18 @@
+#### Never have more than 79 characters per line
+
+Never write lines longer than 79 characters.
+
+80-characters-per-line is a de-facto standard for viewing code. Readers of your code who rely on that standard, and have their terminal or editor sized to 80 characters wide, can fit more on the screen by placing windows side-by-side.
+
+You should stick to a maximum of 79 characters so that there's always a space in the last column. This makes it more obvious the line doesn't continue onto the next line. It also provides a right-hand margin.
+
+If you go over 80 characters, you're making your code significantly harder to read for people who try to rely on the 80-columns standard. Either your line will wrap, which is hard to read, or your readers will have to scroll the window to the right to get the last few characters. Either of these results in code that's harder to read than if you had just worked out a line-break yourself.
+
+It's harder to read long lines because your eyes have to travel further to get to the start of the next line, and the further they have to go, the more likely you'll have to visually readjust. 100-wide and 120-wide styles are easier to write, but harder to read.
+
+It can be very tempting to let a line here or there go over 79 characters, but your readers will pay the price every time they have to read such a line. Treat 79 characters as a hard limit - no ifs or buts. Work out how best to break long lines, and your readers will thank you.
+
+Do what everyone else is doing, and write for 80-column views, and we'll all be better off.
+
+* [Emacs Wiki: Eighty Column Rule](http://www.emacswiki.org/emacs/EightyColumnRule)
+* [Programmers' Stack Exchange: Is the 80 character limit still relevant?](http://programmers.stackexchange.com/questions/604/is-the-80-character-limit-still-relevant-in-times-of-widescreen-monitors)

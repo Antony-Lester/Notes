@@ -1,0 +1,59 @@
+#### Immutability saves lives: use `const` everywhere you can
+
+`const` improves compile-time correctness. It isn't only for documenting read-only pointers. It should be used for every read-only variable and pointee.
+
+`const` helps the reader *immensely* in understanding a piece of functionality. If they can look at an initialization and be sure that that value won't change throughout the scope, they can reason about the rest of the scope much easier. Without `const`, everything is up in the air; the reader is forced to comprehend the entire scope to understand what is and isn't being modified. If you consistently use `const`, your reader will begin to trust you, and will be able to assume that a variable that isn't qualified with `const` is a signal that it will be changed at some point in the scope.
+
+Using `const` everywhere you can also helps you, as a developer, reason about what's happening in the control flow of your program, and where mutability is spreading. It's amazing, when using `const`, how much more helpful the compiler is, especially regarding pointers and pointees. You always want the compiler on your side.
+
+The compiler will warn if a pointee loses `const`ness in a function call (because that would let the pointee be modified), but it won't complain if a pointee gains `const`ness. Thus, if you *don't* specify your pointer arguments as `const` when they're read-only anyway, you discourage your users from using `const` in their own code:
+
+``` c
+// Bad: sum should define its array as const.
+int sum( int * xs, int n );
+
+// Because otherwise, this will be a compilation warning:
+int const xs[] = { 1, 2, 3 };
+return sum( xs, sizeof xs );
+// => warning: passing argument 2 of ‘sum’ discards ‘const’
+//             qualifier from pointer target type
+```
+
+Thus, using `const` isn't really a choice, at least for function signatures. Lots of people consider it beneficial, so everyone should consider it required, whether they like it or not. If you don't use `const`, you force your users to either cast all calls to your functions (yuck), ignore `const` warnings (asking for trouble), or remove those `const` qualifiers (lose compile-time correctness).
+
+If you're forced to work with a library that ignores `const`, you can write a macro that casts for you:
+
+``` c
+// `sum` will not modify the given array; casts for `const` pointers.
+#define sum( xs, n ) sum( ( int * ) xs, n )
+```
+
+Only provide `const` qualifiers for pointees in function prototypes - `const` for the argument names themselves is just an implementation detail.
+
+``` c
+// Unnecessary
+bool Trie_has( Trie const, char const * const );
+// Good
+bool Trie_has( Trie, char const * );
+```
+
+Unfortunately, C can't handle conversions from non-const pointee-pointees to const pointee-pointees. Thus, I recommend against making pointee-pointees `const`.
+
+``` c
+char ** const xss = malloc( 3 * ( sizeof char * ) );
+char const * const * const yss = xss;
+// Warning: initialization from incompatible pointer type
+
+char * const * const zss = xss;
+// <no warning>
+```
+
+If you can `const` the pointees of your *internal* structs, do. Non-constant pointees can cause mutability to needlessly spread, which makes it harder to glean information from the remaining `const` qualifiers. Because you have total control over your internal structs, if you need to remove the `const` in future, you can.
+
+You usually shouldn't `const` the pointees of your external structs. Flexibility is important when they're part of the public interface. Consider it carefully. An exception to this that I often make is for fields are best assignable to string literals, such as `error` fields. In this case, a `char const *` type prevents you and your users from modifying the underlying string literals, which would prompt a segmentation fault.
+
+While it can be reasonable to `const` the *pointees* of struct fields, it's never beneficial to `const` the struct fields themselves. For example, [it makes it painful to `malloc`](http://stackoverflow.com/questions/9691404/how-to-initialize-const-in-a-struct-in-c-with-malloc) a value of that struct. If it really makes sense to stop the fields from changing beyond their original values, just define [invariants](#document-your-struct-invariants-and-provide-invariant-checkers) that enforce whatever qualities you need. Also, you and your users can just define individual variables of that struct as `const` to get the same effect.
+
+Only make return-type pointees `const` if you need to, and after careful consideration. I've found that when the compiler is hinting to add a `const` to a return type, it often means that a `const` should be *removed* somewhere; not added. It can harm flexibility, so be careful.
+
+Finally, never use typecasts or pointers to get around `const` qualifiers - at least, for things you control. If the variable isn't constant, don't make it one.

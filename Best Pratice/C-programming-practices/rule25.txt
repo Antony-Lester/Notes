@@ -1,0 +1,21 @@
+#### Avoid non-pure or non-trivial function calls in expressions
+
+Assign function calls to a variable to describe what it is, even if the variable is as simple as an `int result`. This avoids surprising your readers with state changes from non-pure functions hidden inside conditional contexts. To me, it's really unnatural to think about the expression inside an `if ( ... )` changing things on the outside world. It's much clear to assign the result of that state change to a variable, and then check that value.
+
+Even if you think it's obvious, and it will save you a line - it's not worth the potential for a slip-up. Stick to this rule, and don't think about it.
+
+If the function name is a predicate, like `is_adult` or `in_tree`, and will read naturally in a conditional context, then I think it's alright to skip assigning its result. It's also probably fine to join these kind of functions in a boolean expression if you need to, but use your judgement. Complex boolean expressions should often be extracted to a function.
+
+``` c
+// Good
+int r = listen( fd, backlog );
+if ( r == -1 ) {
+    perror( "listen" );
+    return 1;
+}
+
+// Good
+if ( is_tasty( banana ) ) {
+    eat( banana );
+}
+```

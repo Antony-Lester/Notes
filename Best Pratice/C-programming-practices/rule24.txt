@@ -1,0 +1,50 @@
+#### Never change state within an expression (e.g. with assignments or `++`)
+
+Readable (imperative) programs flow from top to bottom: not right to left. Unfortunately, this happens way too much in C programming. I think the habit and practice was started by *The C Programming Language*, and it's stuck with much of the culture ever since. It's a really bad habit, and makes it so much harder to follow what your program is doing. Never change state in an expression.
+
+``` c
+trie_add( *child, ++word );     // Bad
+trie_add( *child, word + 1 );   // Good
+
+// Good, if you need to modify `word`
+word += 1;
+trie_add( *child, word );
+
+// Bad
+if ( ( x = calc() ) == 0 );
+// Good
+x = calc();
+if ( x == 0 );
+
+// Fine; technically an assignment within an expression
+a = b = c;
+
+while ( --atoms > 0 );          // Bad
+while ( atoms -= 1,             // Good
+        atoms > 0 );
+
+// Fine; there's no better way, without repetition
+int w;
+while ( w = calc_width( shape ),
+        !valid_width( w ) ) {
+    shape = reshape( shape, w );
+}
+```
+
+Don't use multiple assignment unless the variables' values are semantically linked. If there are two variable assignments near each other that coincidentally have the same value, don't throw them into a multiple assignment just to save a line.
+
+Use the comma operator, as above, judiciously. Do without it if you can:
+
+``` c
+// Bad
+for ( int i = 0, limit = get_limit( m ); i < limit; i += 1 ) {
+    ...
+}
+
+// Better
+int const limit = get_limit( x );
+for ( int i = 0; i < limit; i += 1 ) {
+    ...
+}
+```
+

@@ -1,0 +1,16 @@
+#### Give structs TitleCase names, and typedef them
+
+``` c
+// Good
+typedef struct Person {
+    char * name;
+    int age;
+} Person;
+```
+
+TitleCase names should be used for structs so that they're recognizable without the `struct` prefix. They also let you name struct variables as the same thing as their type without names clashing (e.g. a `banana` of type `Banana`). You should always define the struct name, even if you don't need to, because you might need to later (e.g. to use as an incomplete type). Also, having a name at the top helps readability when comments are inserted, or the struct definition becomes large.
+
+I don't typedef structs used for named arguments (see below), however, because the TitleCase naming would be weird. Anyway, if you're using a macro for named arguments, then the typedef is unnecessary and the struct definition is hidden.
+
+If a user dislikes this practice of typedefing structs (which is fair, because it does have drawbacks - see below), they can always use the `struct` namespace instead.
+

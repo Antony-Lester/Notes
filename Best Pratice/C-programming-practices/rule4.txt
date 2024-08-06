@@ -1,0 +1,22 @@
+#### We can't get tabs right, so use spaces everywhere
+
+The idea of tabs was that we'd use tabs for indentation levels, and spaces for alignment. This lets people choose an indentation width to their liking, without breaking alignment of columns.
+
+``` c
+int main( void ) {
+|tab   |if ( pigs_can_fly() == true ) {
+|tab   ||tab   |developers_can_use_tabs( "and align columns "
+|tab   ||tab   |                         "with spaces!" );
+|tab   |}
+}
+```
+
+But, alas, we (and our editors) rarely get it right. There are four main problems posed by using tabs and spaces:
+
+- Tabs for indentation lead to inconsistencies between opinions on line lengths. Someone who uses a tab width of 8 will hit 80 characters much sooner than someone who uses a tab width of 2. The only way to avoid this is to require a tab-width, which eliminates the benefit of tabs.
+- It's much harder to configure your editor to correctly handle tabs and spaces for each project, than it is to just handle spaces. See also: [Tabs vs Spaces: An Eternal Holy War](http://www.jwz.org/doc/tabs-vs-spaces.html)
+- It's harder to align things using only the space bar. It's much easier to hit tab twice than to hold the space bar for eight characters. A developer on your project *will* make this mistake eventually. If you use spaces for indentation and alignment, you can hit the tab key in either situation, which is quick, easy and not prone to errors.
+- It's easier to prevent tab/space errors on projects that use only spaces, because all they need to do is detect for any tabs at all. To prevent against tabs used for alignment on a project that uses tabs, you'll need to come up with a regular expression.
+
+Cut the complexity, and use spaces everywhere. You may have to adjust to someone else's indent width every now and then. Tough luck!
+

@@ -1,0 +1,6 @@
+#### Use `bool` from `stdbool.h` whenever you have a boolean value
+
+``` c
+int print_steps = 0;             // Bad - is this counting steps?
+bool print_steps = false;        // Good - intent is clear
+```

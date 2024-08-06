@@ -1,0 +1,36 @@
+#### Use structs to name functions' optional arguments
+
+``` c
+struct run_server_options {
+    char * port;
+    int backlog;
+};
+
+#define run_server( ... ) \
+    run_server_( ( struct run_server_options ){ \
+        /* default values */ \
+        .port = "45680", \
+        .backlog = 5, \
+        __VA_ARGS__ \
+    } )
+
+int run_server_( struct run_server_options opts )
+{
+    ...
+}
+
+int main( void )
+{
+    return run_server( .port = "3490", .backlog = 10 );
+}
+```
+
+I learnt this from *21st Century C*. So many C interfaces could be improved immensely if they took advantage of this technique. The importance and value of (syntactic) named arguments is all-too-often overlooked in software development. If you're not convinced, read Bret Victor's [Learnable Programming](http://worrydream.com/LearnableProgramming/).
+
+Don't use named arguments everywhere. If a function's only argument happens to be a struct, that doesn't necessarily mean it should become the named arguments for that function. A good rule of thumb is that if the struct is used outside of that function, you shouldn't hide it with a macro like above.
+
+``` c
+// Good; the typecast here is informative and expected.
+book_new( ( Author ){ .name = "Dennis Ritchie" } );
+```
+

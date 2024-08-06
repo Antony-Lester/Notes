@@ -1,0 +1,12 @@
+#### Use one line per variable definition; don't bunch same types together
+
+This makes the types easier to change in future, because atomic lines are easier to edit. If you'll need to change all their types together, you should use your editor's block editing mode.
+
+I think it's alright to bunch semantically-connected struct members together, though, because struct definitions are much easier to comprehend than active code.
+
+``` c
+// Fine
+typedef struct Color {
+    char r, g, b;
+} Color;
+```

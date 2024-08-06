@@ -1,0 +1,61 @@
+Always develop and compile with all warnings 
+Use GCC's and Clang's `-M` to automatically generate object file dependencies
+Write to the most modern standard you can
+We can't get tabs right, so use spaces everywhere
+Never have more than 79 characters per line
+Use `//` comments everywhere, never `/* ... */`
+Program in American English
+Comment non-standard-library `#include`s to say what symbols you use from them
+`#include` the definition of everything you use
+Avoid unified headers
+Provide include guards for all headers to prevent double inclusion
+Always comment `#endif`s of large conditional sections
+No global or static variables if you can help it (you probably can)
+Minimize what you expose; declare top-level names `static` where you can
+Immutability saves lives: use `const` everywhere you can
+Always put `const` on the right and read types right-to-left
+Don't write argument names in function prototypes if they just repeat the type
+Use `double` rather than `float`, unless you have a specific reason otherwise
+Declare variables as late as possible
+Use one line per variable definition; don't bunch same types together
+Don't be afraid of short variable names
+Be consistent in your variable names across functions
+Explicitly compare values; don't rely on truthiness
+Never change state within an expression (e.g. with assignments or `++`)
+Avoid non-pure or non-trivial function calls in expressions
+Always use brackets, even for single-statement blocks
+Avoid unsigned types because the integer conversion rules are complicated
+Use `+= 1` and `-= 1` over `++` and `--`
+Use parentheses for expressions where the [operator precedence](https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence) isn't obvious
+Don't use `switch`, and avoid complicated conditionals
+Separate functions and struct definitions with two lines
+Minimize the scope of variables
+Simple constant expressions can be easier to read than variables
+Prefer compound literals to superfluous variables
+Never use or provide macros that wrap control structures like `for`
+Only upper-case a macro if will act differently than a function call
+If a macro is specific to a function, `#define` it in the body
+Initialize strings as arrays, and use `sizeof` for byte size
+Where possible, use `sizeof` on the variable; not the type
+Never use array syntax for function arguments definitions
+Always prefer array indexing over pointer arithmetic
+Document your struct invariants, and provide invariant checkers
+Use `assert` everywhere your program would fail otherwise
+Repeat `assert` calls; don't `&&` them together
+Don't use variable-length arrays
+Avoid `void *` because it harms type safety
+If you have a `void *`, assign it to a typed variable as soon as possible
+Use C11's anonymous structs and unions rather mutually-exclusive fields
+Don't typecast unless you have to (you probably don't)
+Give structs TitleCase names, and typedef them
+Only typedef structs; never basic types or pointers
+Give enums `UPPERCASE_SNAKE` names, and lowercase their values
+Define a constant for the size of every enum
+Never begin names with `_` or end them with `_t`: they're reserved for standards
+Only use pointers in structs for nullity, dynamic arrays or incomplete types
+Only use pointer arguments for nullity, arrays or modifications
+Prefer to return a value rather than modifying pointers
+Use structs to name functions' optional arguments
+Always use designated initializers in struct literals
+Avoid getters and setters
+C isn't object-oriented, and you shouldn't pretend it is

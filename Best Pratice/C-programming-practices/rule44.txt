@@ -1,0 +1,4 @@
+#### Repeat `assert` calls; don't `&&` them together
+
+Repeating your `assert` calls improves the assertion error reporting. If you chain assertions together with `&&`, you won't know which condition failed.
+

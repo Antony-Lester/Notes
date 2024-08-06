@@ -1,0 +1,7 @@
+#### Declare variables as late as possible
+
+Declaring variables where they're used reminds the reader of the type they're working with. It also suggests where to extract a function to minimize variable scope. Furthermore, it informs the reader as to where each variables are relevant. Declaring variables when they're needed almost always leads to initialization (`int x = 1;`), rather than just declaration (`int x;`). Initializing a variable usually often means you can `const` it, too.
+
+To me, all declarations (i.e. non-initializations) are shifty.
+
+

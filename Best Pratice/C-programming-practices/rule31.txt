@@ -1,0 +1,4 @@
+#### Separate functions and struct definitions with two lines
+
+If you limit yourself to a maximum of one blank line within functions, this rule provides clear visual separation of global elements. This is a habit I learned from Python's PEP8 style guide.
+

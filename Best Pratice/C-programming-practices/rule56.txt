@@ -1,0 +1,48 @@
+#### Only use pointer arguments for nullity, arrays or modifications
+
+This rule helps readers reason about where values are being modified. It also improves the safety by making it impossible for functions that shouldn't receive `NULL` from receiving `NULL` -- this is a huge benefit over languages that require pass-by-reference semantics (and thus `NULL` as a valid value almost everywhere).
+
+When you're reading a codebase that sticks to this rule, and its functions and types are maximally decomposed, you can often tell what a function does just by reading its prototype. This is in stark contrast to projects that pass pointers everywhere: you have no certainty anywhere.
+
+In C, you can pass struct values to functions, and by [pass-by-value semantics](http://c-faq.com/ptrs/passbyref.html), they'll be copied into the stack frame of the receiving function. The original struct can't be modified by that function (although it can return the modification). Like `const`, using this feature wherever you can makes it easier for your readers to reason about your program.
+
+Defining a "modification" gets tricky when you introduce structs with pointer members. I consider a modification to be something that affects the struct itself, or the pointees of the struct.
+
+If a struct will be "modified" by a function, have that function accept a pointer of that struct even if it doesn't need to. This saves the readers from having to find and memorize every relevant struct definition, to be aware of which structs have pointer members.
+
+``` c
+typedef struct {
+    int population;
+} State;
+
+typedef struct {
+    State * states;
+    int num_states;
+} Country;
+
+// Good: takes a `Country *` even though it *could* modify the array
+// pointed to by the `states` member with just a `Country` value.
+void country_grow( Country const * const country, double const percent ) {
+    for ( int i = 0; i < country->num_states; i += 1 ) {
+        country->states[ i ].population *= percent;
+    }
+}
+```
+
+Note the const-ness of the `country` argument above: this communicates that the country itself won't be modified, but a pointee (although it could also be taken to suggest that the pointer is for nullity, but the function name suggests otherwise). It also allows callers to pass in a pointer to a `Country const`.
+
+The other situation to use pointer arguments is if the function needs to accept `NULL` as a valid value (i.e. the poor man's [Maybe](http://learnyouahaskell.com/making-our-own-types-and-typeclasses)). If so, be sure use `const` to signal that the pointer is not for modification, and so it can accept `const` arguments.
+
+``` c
+// Good: `NULL` represents an empty list, and list is a pointer-to-const
+int list_length( List const * list ) {
+    int length = 0;
+    for ( ; list != NULL; list = list->next ) {
+        length += 1;
+    }
+    return length;
+}
+```
+
+Sticking to this rule means ditching incomplete struct types, but I don't really like them anyway. (see the "[C isn't object-oriented](#c-isnt-object-oriented-and-you-shouldnt-pretend-it-is)" rule)
+

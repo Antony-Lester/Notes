@@ -1,0 +1,47 @@
+#### Minimize the scope of variables
+
+If a few variables are only used in a contiguous sequence of lines, and only a single value is used after that sequence, then those first lines are a great candidate for extracting to a function.
+
+``` c
+// Good: addr was only used in the first part of handle_request
+int accept_request( int const listenfd )
+{
+    struct sockaddr addr;
+    return accept( listenfd, &addr, &( socklen_t ){ sizeof addr } );
+}
+
+int handle_request( int const listenfd )
+{
+    int const reqfd = accept_request( listenfd );
+    // ... stuff not involving addr, but involving reqfd
+}
+```
+
+If the body of `accept_request` were left in `handle_request`, then the `addr` variable will be in the scope for the remainder of the `handle_request` function even though it's only used for getting the `reqfd`. This kind of thing adds to the cognitive load of understanding a function, and should be fixed wherever possible.
+
+Another tactic to limit the exposure of variables is to break apart complex expressions into blocks, like so:
+
+``` c
+// Rather than:
+bool trie_has( Trie const trie, char const * const string )
+{
+    Trie const * const child = Trie_child( trie, string[ 0 ] );
+    return string[ 0 ] == '\0'
+           || ( child != NULL
+                && Trie_has( *child, string + 1 ) );
+}
+
+// child is only used for the second part of the conditional, so we
+// can limit its exposure like so:
+bool trie_has( Trie const trie, char const * const string )
+{
+    if ( string[ 0 ] == '\0' ) {
+        return true;
+    } else {
+        Trie const * const child = Trie_child( trie, string[ 0 ] );
+        return child != NULL
+            && Trie_has( *child, string + 1 );
+    }
+}
+```
+
