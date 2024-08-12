@@ -1,0 +1,35 @@
+#### Avoid getters and setters
+
+If you're seeking encapsulation in C, you're probably overcomplicating things. Encourage your users to access and set struct members directly; never prefix members with `_` to denote an access level. Declare your struct invariants, and you don't need to worry about your users breaking things - it's their responsibility to provide a valid struct.
+
+As advised in [another rule](#always-prefer-to-return-a-value-rather-than-modifying-pointers), avoid mutability wherever you can.
+
+``` c
+// Rather than:
+void city_set_state( City * const c, char const * const state )
+{
+    c->state = state;
+    c->country = country_of_state( state );
+}
+
+// Always prefer immutability and purity:
+City city_with_state( City c, char const * const state )
+{
+    c.state = state;
+    c.country = country_of_state( state );
+    return c;
+}
+
+City c = { .name = "Vancouver" };
+c = city_with_state( c, "BC" );
+printf( "%s is in %s, did you know?\n", c.name, c.country );
+```
+
+But you should always provide an interface that allows for [declarative programming](https://en.wikipedia.org/wiki/Declarative_programming):
+
+``` c
+City const c = city_new( .name = "Boston", .state = "MA" );
+printf( "I think I'm going to %s,\n"
+        "Where no one changes my state\n", c.name, c.country );
+```
+

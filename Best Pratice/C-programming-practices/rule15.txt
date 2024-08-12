@@ -1,0 +1,14 @@
+#### Always put `const` on the right and read types right-to-left
+
+``` c
+const char * word;              // Bad: not as const-y as it can be
+const char * const word;        // Bad: makes types very weird to read
+char const* const word;         // Bad: weird * placement
+
+// Good: right-to-left, word is a constant pointer to a constant char
+char const * const word;
+```
+
+Because of this rule, you should always pad the `*` type qualifier with spaces.
+
+

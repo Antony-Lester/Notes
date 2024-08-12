@@ -1,0 +1,33 @@
+#### Initialize strings as arrays, and use `sizeof` for byte size
+
+Always initialize your string literals as arrays, because it lets you get the byte size with just `sizeof str`. If you initialize them as pointers, you have to get the byte size with `strlen( str ) + 1` - I know I've been bitten more than once by forgetting the `+ 1` there.
+
+``` c
+// Good
+char const message[] = "always use arrays for strings!";
+write( output, message, sizeof message );
+```
+
+Also, pointer initializations are less safe than array initializations, *unless* you compile with `-Wwrite-strings` to ensure string literals are initialized with the type `char const *`. Unfortunately, `-Wwrite-strings` isn't included in `-Wall` or `-Wextra`: you have to explicitly enable it.  Without `-Wwrite-strings`, you can assign string literals to a `char *`. But your program will seg-fault when you re-assign the elements of that pointer.
+
+``` c
+// Without -Wwrite-strings, this will compile without warnings, but
+// it will prompt a segmentation fault at the second line.
+char * xs = "hello";
+xs[ 0 ] = 'c';
+
+// This program will compile and execute fine.
+char xs[] = "hello";
+xs[ 0 ] = 'c';
+```
+
+The benefit of initializing string literals as pointers is that those pointers will point to read-only memory, potentially allowing some optimizations. Initializing string literals as arrays essentially creates a mutable string is only "artificially" protected against modifications with `const` - but this can be defeated with a cast.
+
+Again, I advise against prematurely optimizing. Until you've finished development and have done benchmarks, performance should be your lowest priority. I haven't seen any tests on string literal definitions, but I'd be very surprised to see any notable speed improvements by defining string literals as pointers.
+
+As mentioned in the rule on `const`ing everything: never ever cast away a `const`. Remove the `const` instead. Don't worry about "artificial" protections. I know I'd much prefer my constant values to be protected by explicit, syntactic constructs that will warn when compiling, rather than implicit, obscure rules that will seg-fault when violated.
+
+Finally, sticking to array initializations saves you and your readers the conceptual overhead of switching between pointer initializations and array initializations, depending on if you need mutability or not.
+
+Just always initialize string literals as arrays, and keep it simple.
+

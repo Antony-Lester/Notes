@@ -1,0 +1,20 @@
+#### Explicitly compare values; don't rely on truthiness
+
+Explicit comparisons tell the reader what they're working with, because it's not always obvious in C, and it *is* always important. Are we working with counts or characters or booleans or pointers? The first thing I do when I see a variable being tested for truthiness in C is to hunt down the declaration to find its type. I really wish the programmer had just told me in the comparison.
+
+``` c
+// Bad - what are these expressions actually testing for (if at all?)
+if ( on_fire );
+return !character;
+something( first( xs ) );
+while ( !at_work );
+
+// Good - informative, and eliminates ambiguity
+if ( on_fire > 0 );
+return character == NULL;
+something( first( xs ) != '\0' );
+while ( at_work == false );
+```
+
+I'll often skip this rule for boolean functions named as a predicate, like `is_edible` or `has_client`. It's still not *completely* obvious what the conditional is checking for, but I usually consider the visual clutter of a `== true` or `== false` to be more of a hassle than a help to readers in this situation. Use your judgement.
+

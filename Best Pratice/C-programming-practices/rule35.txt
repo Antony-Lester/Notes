@@ -1,0 +1,20 @@
+#### Never use or provide macros that wrap control structures like `for`
+
+Macros that loop over the elements of a data structure are extremely confusing, because they're extra-syntactic and readers can't know the control flow without looking up the definition.
+
+To understand your program, it's crucial that your readers can understand its control flow.
+
+Don't provide control-macros even as an option. They're universally harmful, so don't enable it. Users can define their own if they really want to.
+
+``` c
+// Bad
+#define TRIE_EACH( TRIE, INDEX ) \
+    for ( int INDEX = 0; INDEX < ( TRIE ).alphabet.size; INDEX += 1 )
+
+// Not at all obvious what's actually going to happen here.
+TRIE_EACH( trie, i ) {
+    Trie * const child = trie.children[ i ];
+    ...
+}
+```
+

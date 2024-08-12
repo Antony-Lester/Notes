@@ -1,0 +1,4 @@
+#### If you have a `void *`, assign it to a typed variable as soon as possible
+
+Just like working with uninitialized variables is dangerous, working with void pointers is dangerous: you want the compiler on your side. So ditch the `void *` as soon as you can.
+

@@ -1,0 +1,18 @@
+#### Use parentheses for expressions where the [operator precedence](https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence) isn't obvious
+
+``` c
+int x = a * b + c / d;          // Bad
+int x = ( a * b ) + ( c / d );  // Good
+
+&sockaddr->sin_addr;            // Bad
+&( sockaddr->sin_addr );        // Good
+```
+
+You can and should make exceptions for commonly-seen combinations of operations. For example, skipping the operators when combining the equality and boolean operators is fine, because readers are probably used to that, and are confident of the result.
+
+``` c
+// Fine
+return hungry == true
+    || ( legs != NULL && fridge.empty == false );
+```
+

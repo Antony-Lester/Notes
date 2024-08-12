@@ -1,0 +1,22 @@
+#### Use `//` comments everywhere, never `/* ... */`
+
+Stick to single-line comments, and cut the complexity. Compared to single-line comments, multi-line comments:
+
+- are rarely used with a blank margin, so they're just as character-heavy
+- have a style, which has to be specified and adhered to
+- often have `*/` on its own line, so they're more line-expensive
+- have weird rules about embedded `/*` and `*/`
+- are harder/impossible to block-edit, and to extend
+- are more visually-cluttering than `//`
+
+You have to use `/* ... */` for inline comments in multi-line `#define`s, though:
+
+``` c
+#define MAGIC( x ) \
+    /* Voodoo magic happens here. */ \
+    ...
+```
+
+But I often prefer to just add `//` comments after the macro body describing the tricky bits. I think this makes the macro body easier to read, but still provides the (much-needed) documentation.
+
+

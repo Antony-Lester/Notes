@@ -1,0 +1,19 @@
+#### Use GCC's and Clang's `-M` to automatically generate object file dependencies
+
+The GNU Make Manual [touches](https://www.gnu.org/software/make/manual/make.html#Automatic-Prerequisites) on how to automatically generate the dependencies of your object files from the source file's `#include`s. The example rule given in the manual is a bit complicated. Here's the rules I use:
+
+``` make
+depfiles = $(objects:.o=.d)
+
+# Have the compiler output dependency files with make targets for each
+# of the object files. The `MT` option specifies the dependency file
+# itself as a target, so that it's regenerated when it should be.
+%.dep.mk: %.c
+	$(CC) -M -MP -MT '$(<:.c=.o) $@' $(CPPFLAGS) $< > $@
+
+# Include each of those dependency files; Make will run the rule above
+# to generate each dependency file (if it needs to).
+-include $(depfiles)
+```
+
+

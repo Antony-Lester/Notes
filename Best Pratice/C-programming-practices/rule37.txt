@@ -1,0 +1,4 @@
+#### If a macro is specific to a function, `#define` it in the body
+
+For the same reasons why we should always minimize the scope of our variables, if it makes sense to limit the scope of a macro, we should.
+

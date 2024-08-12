@@ -1,0 +1,26 @@
+#### Prefer compound literals to superfluous variables
+
+This is beneficial for the same reason as minimizing the scope of variables.
+
+``` c
+// Bad, if `sa` is never used again.
+struct sigaction sa = {
+    .sa_handler = sigchld_handler,
+    .sa_flags = SA_RESTART
+};
+sigaction( SIGCHLD, &sa, NULL );
+
+// Good
+sigaction( SIGCHLD, &( struct sigaction ){
+    .sa_handler = sigchld_handler,
+    .sa_flags = SA_RESTART
+}, NULL );
+
+// Bad
+int v = 1;
+setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, &v, sizeof v );
+
+// Good
+setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, &( int ){ 1 }, sizeof int );
+```
+
