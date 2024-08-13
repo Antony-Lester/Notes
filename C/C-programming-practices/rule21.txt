@@ -1,0 +1,4 @@
+#### Be consistent in your variable names across functions
+
+Consistency helps your readers understand what's happening. Using different names for the same values in functions is suspicious, and forces your readers to reason about unimportant things.
+

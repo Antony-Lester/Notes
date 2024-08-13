@@ -1,0 +1,4 @@
+#### If you're providing allocation and free functions only for a struct member, allocate memory for the whole struct
+
+If you're providing `foo_alloc` and `foo_free` functions only so you can allocate memory for a member of the `Foo` struct, you've lost the benefits and safety of automatic storage. You may as well have the allocation and free methods allocate memory for the whole struct, so users can pass it outside the scope it was defined (without dereferencing it), if they want.
+

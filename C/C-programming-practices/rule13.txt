@@ -1,0 +1,5 @@
+#### Minimize what you expose; declare top-level names `static` where you can
+
+Your header files should *only* include things that users need to use your library. Internal functions or structs or macros should not be provided here; declare them in their respective source files. If it's needed among multiple source files, provide an internal header file.
+
+If a function or global variable isn't exported in the header, declare it as `static` in the source file to give it internal linkage. This eliminates the chance of name-clashes among object files, enables a few optimizations, and can improve the linking speed.

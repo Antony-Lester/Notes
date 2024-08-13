@@ -1,0 +1,7 @@
+#### `#include` the definition of everything you use
+
+Don't depend on what your headers include. If your code uses a symbol, include the header file where that symbol is defined. Then, if your headers change their inclusions, your code won't break.
+
+Also, combined with the `#include` comment rule above, this saves your readers and fellow developers from having to follow a trail of includes just to find the definition of a symbol you're using. Your code should just tell them where it comes from.
+
+

@@ -1,0 +1,16 @@
+#### Define a constant for the size of every enum
+
+There's no versatile, future-proof way to work with loops, arrays, or bit-fields of the `enum` otherwise. Always define a constant to denote the size of the enumeration, to avoid hard-coded values (by you or your users).
+
+``` c
+enum SUIT {
+    SUIT_hearts,
+    SUIT_diamonds,
+    SUIT_clubs,
+    SUIT_spades
+};
+#define NUM_SUITS 4
+```
+
+I like to `#define` the size explicitly, rather than making it the last enum value. It seems natural to exclude the size of the enum from the actual enum itself - `NUM_SUITS` isn't a card suit I've ever heard of! It also protects against one of the previous enum values from being explicitly set (e.g. `SUIT_hearts = 1`), which would mean the last enum value wouldn't represent the size of the enum.
+

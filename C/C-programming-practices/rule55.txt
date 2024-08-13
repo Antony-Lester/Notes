@@ -1,0 +1,6 @@
+#### Only use pointers in structs for nullity, dynamic arrays or incomplete types
+
+Every pointer in a struct is an opportunity for a segmentation fault.
+
+If the would-be pointer shouldn't be NULL, isn't an array of an unknown size, and isn't of the type of the struct itself, then don't make it a pointer. Just include a member of the type itself in the struct. Don't worry about the size of the containing struct until you've done benchmarks.
+

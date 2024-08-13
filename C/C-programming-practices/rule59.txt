@@ -1,0 +1,19 @@
+#### Always use designated initializers in struct literals
+
+``` c
+// Bad - will break if struct members are reordered, and it's not
+// always clear what the values represent.
+Fruit apple = { "red", "medium" };
+// Good; future-proof and descriptive
+Fruit watermelon = { .color = "green", .size = "large" };
+```
+
+Sometimes I'll bend this rule for named arguments, by having a particular field be at the top of the struct, so that callers can call the function without having to name that single argument:
+
+``` c
+run_server( "3490" );
+run_server( .port = "3490", .backlog = 10 );
+```
+
+If you want to allow this, document it explicitly. It's then your responsibility to version your library correctly, if you change the ordering of the fields.
+

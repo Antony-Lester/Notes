@@ -1,0 +1,13 @@
+#### Give enums `UPPERCASE_SNAKE` names, and lowercase their values
+
+Because enums are mostly just integer constants, it's natural to name them the same way as `#define`d constants. The `enum` type prefix will communicate that it expects an enum value, and the lowercase value suffixes will communicate that they aren't quite integer constants.
+
+``` c
+enum JSON_TYPE {
+    JSON_TYPE_null,
+    JSON_TYPE_boolean,
+    JSON_TYPE_number,
+    ...
+};
+```
+

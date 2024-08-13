@@ -1,0 +1,12 @@
+#### Always prefer array indexing over pointer arithmetic
+
+If you're working with an array of things, treat them as an array. Pointer arithmetic is confusing and bug-prone. Sticking to array indexing often lets you keep the important variables constant, and only the index variables non-constant.
+
+``` c
+// Bad
+for ( ; *str != '\0'; str += 1 );
+
+// Good
+for ( int i = 0; str[ i ] != '\0'; i += 1 );
+```
+

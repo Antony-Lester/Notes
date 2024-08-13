@@ -1,0 +1,22 @@
+#### Prefer to return a value rather than modifying pointers
+
+This encourages immutability, cultivates [pure functions](https://en.wikipedia.org/wiki/Pure_function), and makes things simpler and easier to understand. It also improves safety by eliminating the possibility of a `NULL` argument.
+
+``` c
+// Bad: unnecessary mutation (probably), and unsafe
+void drink_mix( Drink * const drink, Ingredient const ingr ) {
+    assert( drink != NULL );
+    color_blend( &( drink->color ), ingr.color );
+    drink->alcohol += ingr.alcohol;
+}
+
+// Good: immutability rocks, pure and safe functions everywhere
+Drink drink_mix( Drink const drink, Ingredient const ingr ) {
+    return ( Drink ){
+        .color = color_blend( drink.color, ingr.color ),
+        .alcohol = drink.alcohol + ingr.alcohol
+    };
+}
+```
+
+This isn't always the best way to go, but it's something you should always consider.

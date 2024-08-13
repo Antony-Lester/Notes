@@ -1,0 +1,38 @@
+#### Use C11's anonymous structs and unions rather mutually-exclusive fields
+
+If only certain fields of your struct should be set when certain other fields have certain values, use C11's anonymous structs and unions:
+
+``` c
+enum AUTOMATON_TYPE {
+    AUTOMATON_TYPE_char,
+    AUTOMATON_TYPE_split,
+    AUTOMATON_TYPE_match
+};
+#define NUM_AUTOMATON_TYPES ( 3 )
+
+typedef struct Automaton {
+    enum AUTOMATON_TYPE type;
+    union {
+        struct { // type = char
+            char c;
+            struct Automaton * next;
+        };
+        struct { // type = split
+            struct Automaton * left;
+            struct Automaton * right;
+        };
+    };
+} Automaton;
+```
+
+This is much more explicit and obvious than something like:
+
+``` c
+typedef struct Automaton {
+    enum AUTOMATON_TYPE type;
+    char c;
+    struct Automaton * left;
+    struct Automaton * right;
+} Automaton;
+```
+

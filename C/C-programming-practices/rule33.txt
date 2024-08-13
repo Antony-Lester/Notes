@@ -1,0 +1,6 @@
+#### Simple constant expressions can be easier to read than variables
+
+It can often help the readability of your code if you replace variables that are only assigned to constant expressions, with those expressions.
+
+Consider the `trie_has` example above - the `string[ 0 ]` expression is repeated twice. It would be harder to read and follow if we inserted an extra line to define a `char` variable. It's just another thing that the readers would have to keep in mind. Many programmers of other languages wouldn't think twice about repeating an array access.
+

@@ -1,0 +1,7 @@
+#### Program in American English
+
+Developing in the same language, using the same spelling and vocabulary, is important. This is especially true in free-software projects with contributors from around the world. You should use the same language consistently for your project, in code, comments and documentation.
+
+So, for American English, write `color`, `flavor`, `center`, `meter`, `neighbor`, `defense`, `routing`, `sizable`, `burned`, and so on ([see more](https://en.wikipedia.org/wiki/American_and_British_English_spelling_differences)). I'm Australian, but I appreciate that most programmers will be learning and using American English. Also, American English spelling is consistently more phonetic and consistent than British English. British English tends to evolve towards American English for this reason, I think.
+
+

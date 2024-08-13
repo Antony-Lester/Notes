@@ -1,0 +1,10 @@
+#### Only upper-case a macro if will act differently than a function call
+
+By "act differently", I mean if things will break when users wouldn't expect them to. If a macro just looks different (e.g. the named arguments technique), then I don't consider that justification for an upper-case name. A macro should have an upper-case name if it:
+
+- repeats its arguments in its body, because this will break for non-pure expressions. Many compilers provide [statement expressions](http://stackoverflow.com/questions/6440021/compiler-support-of-gnu-statement-expression) to prevent this, but it's non-standard. If you do use statement expressions, then you don't need to upper-case your macro name, because it's not relevant to your users.
+- is wrapped in blocks or a control structure, because it can't be used as an expression then.
+- modifies the surrounding context, e.g., with a `return` or `goto`.
+- takes an array literal as a named argument. ([why](http://stackoverflow.com/questions/5503362/passing-array-literal-as-macro-argument))
+
+

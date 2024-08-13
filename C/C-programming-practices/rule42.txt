@@ -1,0 +1,12 @@
+#### Document your struct invariants, and provide invariant checkers
+
+> An **invariant** is a condition that can be relied upon to be true during execution of a program.
+
+For any function that takes a struct (or a pointer to a struct), all invariants of that struct should be true before and after the execution of the function. Invariants make it the caller's responsibility to provide valid data, and the function's responsibility to return valid data. Invariants save those functions from having to repeat assertions of those conditions, or worse, not even checking and working with invalid data.
+
+Provide an "invariants" comment section at the end of your struct definition, and list all the invariants you can think of. Also, implement `is_valid` and `assert_valid` functions for users to check those assertions on values of the structs they create on their own. These functions are crucial to being able to trust that the invariants hold for values of that struct. Without them, how will the users know?
+
+[Here's an example](https://github.com/mcinglis/trie.c/blob/master/alphabet.h#L10) of a struct invariant.
+
+My university faculty is [pretty big](http://www.itee.uq.edu.au/sse/projects) on software correctness. It certainly rubbed off on me.
+

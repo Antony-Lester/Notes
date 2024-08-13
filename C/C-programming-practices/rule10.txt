@@ -1,0 +1,7 @@
+#### Avoid unified headers
+
+Unified headers are generally bad, because they relieve the library developer of the responsibility to provide loosely-coupled modules clearly separated by their purpose and abstraction. Even if the developer (thinks she) does this anyway, a unified header increases compilation time, and couples the user's program to the entire library, regardless of if they need it. There are numerous other disadvantages, touched on in the points above.
+
+There was a good exposé on unified headers on the [Programmers' Stack Exchange](http://programmers.stackexchange.com/questions/185773/library-design-provide-a-common-header-file-or-multiple-headers). An answer mentions that it's reasonable for something like GTK+ to only provide a single header file. I agree, but I think that's due to the bad design of GTK+, and it's not intrinsic to a graphical toolkit.
+
+It's harder for users to write multiple `#include`s just like it's harder for users to write types. Bringing difficulty into it is missing the forest for the trees.

@@ -1,0 +1,3 @@
+#### Don't be afraid of short variable names
+
+If the scope fits on a screen, and the variable is used in a lot of places, and there would be an obvious letter or two to represent it, try it out and see if it helps readability. It probably will!

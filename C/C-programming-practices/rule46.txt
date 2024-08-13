@@ -1,0 +1,4 @@
+#### Avoid `void *` because it harms type safety
+
+`void *` is useful for polymorphism, but polymorphism is almost never as important as type safety. Void pointers are indispensable in many situations, but you should consider other, safer alternatives first.
+
